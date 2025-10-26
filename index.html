@@ -5,21 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Expense Tracker — Pro</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <div id="loader" class="loader hidden"></div>
+  <div id="toast" class="toast hidden"></div>
+
   <main class="container">
     <header class="header">
       <div class="title-block">
         <h1>Expense Tracker</h1>
-        <p class="muted">Clean • Professional • Persistent (LocalStorage)</p>
+        <p class="muted">Clean • Professional • Persistent (MongoDB)</p>
       </div>
 
       <div class="header-actions">
@@ -39,13 +38,11 @@
     </header>
 
     <section class="content">
-      <!-- LEFT: form + chart -->
       <div class="left-column">
         <div class="card form-card">
           <form id="expenseForm" class="form" autocomplete="off">
             <div class="form-top">
               <h2 class="form-title">Add Expense</h2>
-
               <div class="controls-inline">
                 <input id="searchInput" class="input-search" placeholder="Search description or category…" />
                 <select id="filterCategory" class="select-filter">
@@ -98,24 +95,23 @@
 
         <div class="card chart-card">
           <h3 class="chart-title">Spending by Category</h3>
-          <div class="chart-wrap">
-            <canvas id="categoryChart"></canvas>
-          </div>
-
+          <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
           <div class="chart-legend" id="chartLegend"></div>
+        </div>
+
+        <div class="card chart-card">
+          <h3 class="chart-title">Monthly Spending</h3>
+          <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
         </div>
       </div>
 
-      <!-- RIGHT: list -->
       <aside class="right-column card">
         <h2 class="list-title">Expenses</h2>
-        <ul id="expensesList" class="expenses-list">
-          <!-- items injected here -->
-        </ul>
+        <ul id="expensesList" class="expenses-list"></ul>
 
         <div class="list-footer">
           <div class="muted small">Tip: Add expenses and refresh to see persistence.</div>
-          <div class="muted small">LocalStorage keys: <code>expenses</code>, <code>theme</code></div>
+          <div class="muted small">Database: MongoDB | Backend: Spring Boot</div>
         </div>
       </aside>
     </section>
