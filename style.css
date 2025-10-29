@@ -430,3 +430,30 @@ body.theme-force-repaint {
   opacity: 1;
   transform: translateY(0);
 }
+.budget-warning {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.budget-warning.hidden {
+  display: none;
+}
+
+.budget-warning.warning {
+  background: rgba(250, 204, 21, 0.2);
+  border: 1px solid #facc15;
+  color: #854d0e;
+  box-shadow: 0 4px 10px rgba(250, 204, 21, 0.2);
+}
+
+.budget-warning.danger {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #991b1b;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}

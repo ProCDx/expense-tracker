@@ -34,15 +34,39 @@
           <div class="summary-label">Total</div>
           <div id="totalAmount" class="summary-value">₹0.00</div>
         </div>
+        <div id="budgetWarning" class="budget-warning hidden">
+  <span id="budgetWarningText"></span>
+</div>
+
       </div>
     </header>
-
+    
     <section class="content">
       <div class="left-column">
         <div class="card form-card">
           <form id="expenseForm" class="form" autocomplete="off">
+            <div class="card" style="margin-bottom: 16px;">
+  <h2 class="form-title">Set Income & Budget</h2>
+  <div class="row">
+    <div class="field">
+      <label for="income">Monthly Income</label>
+      <input id="income" type="number" placeholder="e.g. 30000" min="0">
+    </div>
+
+    <div class="field">
+      <label for="budget">Budget Limit</label>
+      <input id="budget" type="number" placeholder="e.g. 15000" min="0">
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button id="saveBudgetBtn" type="button" class="btn primary">Save Budget</button>
+  </div>
+</div>
+
             <div class="form-top">
               <h2 class="form-title">Add Expense</h2>
+              
               <div class="controls-inline">
                 <input id="searchInput" class="input-search" placeholder="Search description or category…" />
                 <select id="filterCategory" class="select-filter">
@@ -83,7 +107,7 @@
                 <input id="description" type="text" placeholder="e.g., lunch, bus fare">
               </div>
             </div>
-
+            
             <div class="form-actions">
               <button id="addBtn" type="submit" class="btn primary">Add Expense</button>
               <button id="clearAllBtn" type="button" class="btn ghost">Clear All</button>

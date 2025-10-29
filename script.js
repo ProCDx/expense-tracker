@@ -17,6 +17,12 @@ const filterCategory = document.getElementById('filterCategory');
 const themeToggle = document.getElementById('themeToggle');
 const ctx = document.getElementById('categoryChart').getContext('2d');
 const ctxMonth = document.getElementById('monthlyChart').getContext('2d');
+const incomeInput = document.getElementById('income');
+const budgetInput = document.getElementById('budget');
+const saveBudgetBtn = document.getElementById('saveBudgetBtn');
+
+const BUDGET_KEY = 'budgetData'; // for localStorage
+
 let categoryChart = null;
 let monthlyChart = null;
 
@@ -102,6 +108,26 @@ function getTodayDate() {
   const t = new Date();
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
 }
+function saveBudgetData() {
+  const income = parseFloat(incomeInput.value) || 0;
+  const budget = parseFloat(budgetInput.value) || 0;
+  if (!income || !budget || income <= 0 || budget <= 0) {
+    showToast("Enter valid income and budget!", "error");
+    return;
+  }
+  localStorage.setItem(BUDGET_KEY, JSON.stringify({ income, budget }));
+  showToast("Budget saved successfully!", "success");
+}
+
+function loadBudgetData() {
+  const data = JSON.parse(localStorage.getItem(BUDGET_KEY));
+  if (data) {
+    incomeInput.value = data.income;
+    budgetInput.value = data.budget;
+  }
+  return data;
+}
+
 
 function escapeHtml(str) {
   return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
@@ -167,8 +193,41 @@ async function updateTotal() {
   const total = items.reduce((s, i) => s + Number(i.amount || 0), 0);
   totalAmountEl.textContent = formatCurrency(total);
   totalCard.classList.add('pulse');
-  setTimeout(()=>totalCard.classList.remove('pulse'),900);
+  setTimeout(() => totalCard.classList.remove('pulse'), 900);
+
+  const budgetData = loadBudgetData();
+  const warningBox = document.getElementById('budgetWarning');
+  const warningText = document.getElementById('budgetWarningText');
+
+  // Reset
+  warningBox.className = 'budget-warning hidden';
+  warningText.textContent = '';
+
+  if (budgetData) {
+    const { budget } = budgetData;
+    const warningLimit = budget * 0.8;
+
+    if (total >= warningLimit && total < budget) {
+      showToast(`⚠️ You’ve spent over 80% of your ₹${budget} budget!`, "info");
+      warningBox.className = 'budget-warning warning';
+      warningText.textContent = `⚠️ Warning: You’ve spent ₹${formatCurrency(total)} of your ₹${budget} budget.`;
+    } else if (total >= budget) {
+      showToast(`🚨 Budget exceeded! You’ve spent ₹${formatCurrency(total)} of ₹${budget}.`, "error");
+      warningBox.className = 'budget-warning danger';
+      warningText.textContent = `🚨 Budget exceeded! You’re ${formatCurrency(total - budget)} over your ₹${budget} budget.`;
+    }
+  }
+  if (total >= warningLimit && total < budget) {
+  totalCard.style.boxShadow = '0 0 18px rgba(250, 204, 21, 0.4)';
+} else if (total >= budget) {
+  totalCard.style.boxShadow = '0 0 18px rgba(239, 68, 68, 0.4)';
+} else {
+  totalCard.style.boxShadow = '';
 }
+
+}
+
+
 
 async function updateChart() {
   const items = await readStorage();
@@ -352,4 +411,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;filterCategory.appendChild(o);});
   applyTheme(localStorage.getItem(THEME_KEY)||'light');
   await renderExpenses();
+  loadBudgetData();
+
 });
+saveBudgetBtn.addEventListener('click', saveBudgetData);
